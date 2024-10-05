@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Model User
+model User {
+  // Field
+  username String  @id
+  password String
+  name     String
+  token    String? // If Can Null Add ? After "String"
+
+  // Relation to Contact
+  // One To Many
+  contacts Contact[]
+
+  // Table Name In Database
+  @@map("users")
+}
+
+// Model Contact
+model Contact {
+  // Field
+  id         Int     @id @default(autoincrement())
+  first_name String
+  last_name  String? // If Can Null Add ? After "String"
+  email      String? // If Can Null Add ? After "String"
+  phone      String? // If Can Null Add ? After "String"
+
+  // Foreign Key
+  username_user String
+
+  // Relation/Owner
+  // One to One
+  user User @relation(fields: [username_user], references: [username])
+
+  // Relation to Contact
+  // One To Many
+  addresses Address[]
+
+  // Table Name In Database
+  @@map("contacts")
+}
+
+// Model Address
+model Address {
+  // Field
+  id          Int     @id @default(autoincrement())
+  street      String?
+  city        String? // If Can Null Add ? After "String"
+  province    String? // If Can Null Add ? After "String"
+  contry      String // If Can Null Add ? After "String"
+  postal_code String?
+
+  // Foreign Key
+  contact_id Int
+
+  // Relation/Owner
+  // One to One
+  contact Contact @relation(fields: [contact_id], references: [id])
+
+  // Table Name In Database
+  @@map("addresses")
+}

@@ -1,3 +1,34 @@
 +> CMD
     => Cek Verison
         node --version
+    => Run File
+        node <filename>.js
+    => For Create Project Node JS (RESTFUL)
+        npm init
+    => Create Prisma For Config Database
+        npx prisma init
+        => Create Migration
+            npx prisma migrate dev --create-only
+        => Create Migration To Database
+            npx prisma migrate dev
++> Package (Search Google Function The Package)
+    => For Validate
+        npm install joi
+    => For API
+        npm install express (Package)
+        npm install --save-dev @types/express
+        npm install --save-dev supertest @types/supertest (For Unit Test)
+    => For Database
+        npm install --save-dev prisma (For Development)
+    => For Logger
+        npm install winston
+    => For Hashing
+        npm install bcrypt
+        npm install --save-dev @types/bcrypt (For Development) (Run A Both)
+    => For UUID (For Login Auth)
+        npm install uuid
+        npm install --save-dev @types/uuid (For Development) (Run A Both)
+    => For UniTest
+        npm install --save-dev jest @types/jest
+        npm install --save-dev babel-jest @babel/preset-env
+    
