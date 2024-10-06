@@ -17,7 +17,7 @@
     => For API
         npm install express (Package)
         npm install --save-dev @types/express
-        npm install --save-dev supertest @types/supertest (For Unit Test)
+        npm install --save-dev supertest @types/supertest (For Unit Test) /OR/ npm install supertest --save-dev
     => For Database
         npm install --save-dev prisma (For Development)
     => For Logger
@@ -29,6 +29,10 @@
         npm install uuid
         npm install --save-dev @types/uuid (For Development) (Run A Both)
     => For UniTest
-        npm install --save-dev jest @types/jest
+        npm install --save-dev jest /OR/ npm install --save-dev jest@25.2.2 supertest
         npm install --save-dev babel-jest @babel/preset-env
+        npm install supertest jest
+        npm install expect.js
+
+        
     

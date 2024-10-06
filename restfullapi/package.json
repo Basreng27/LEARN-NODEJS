@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/main.js",
   "scripts": {
-    "test": "jest -i"
+    "test": "jest"
   },
   "author": "Rayandra Wandi Marselana",
   "license": "ISC",
@@ -12,12 +12,15 @@
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "bcrypt": "^5.1.1",
+    "chai": "^5.1.1",
+    "expect.js": "^0.3.1",
     "express": "^4.21.0",
     "joi": "^17.13.3",
     "uuid": "^10.0.0",
     "winston": "^3.14.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.7",
     "@babel/preset-env": "^7.25.7",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
@@ -26,7 +29,7 @@
     "@types/uuid": "^10.0.0",
     "babel": "^5.8.38",
     "babel-jest": "^29.7.0",
-    "jest": "^29.7.0",
+    "jest": "^25.5.4",
     "prisma": "^5.20.0",
     "supertest": "^7.0.0"
   }

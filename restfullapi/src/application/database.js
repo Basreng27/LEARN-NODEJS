@@ -1,11 +1,11 @@
 // Setup Prisma
-import {PrismaClient} from '@prisma/client'
-import {logger} from './logging.js'
+import { PrismaClient } from '@prisma/client'
+import { logger } from './logging.js'
 
 // Error Will Show In Console
 // export const prismaClient = new PrismaClient();
 
-// Error Will Send To Logging/Logger
+// Error Will Send To Logging/Logger Winston
 export const prismaClient = new PrismaClient({
     log: [
         {
