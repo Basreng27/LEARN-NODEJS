@@ -1,18 +1,14 @@
 import supertest from 'supertest';  // Use import for ECMAScript modules
 import { web } from '../src/application/web.js';
-import { prismaClient } from '../src/application/database.js';
 import { describe, it, afterEach } from 'node:test';  // Change to import
 import { expect } from 'expect';
 import { logger } from '../src/application/logging.js';
+import { removeTestUser } from './test-util.js';
 
 describe('POST /api/users', function () {
     // After sending data, clear the test data
     afterEach(async () => {
-        await prismaClient.user.deleteMany({
-            where: {
-                username: "wandi"
-            }
-        });
+        await removeTestUser();
     });
 
     // Regist OK
@@ -20,15 +16,15 @@ describe('POST /api/users', function () {
         const result = await supertest(web)
         .post('/api/users')
         .send({
-            username: 'wandi',
-            password: 'wandi',
-            name: 'wandi',
+            username: 'test',
+            password: 'test',
+            name: 'test',
         });
         
         // Expectations to match the response
         expect(result.status).toBe(200);
-        expect(result.body.data.username).toBe('wandi');
-        expect(result.body.data.name).toBe('wandi');
+        expect(result.body.data.username).toBe('test');
+        expect(result.body.data.name).toBe('test');
         expect(result.body.data.password).toBeUndefined();  // Password should not be returned
     });
     
@@ -54,23 +50,23 @@ describe('POST /api/users', function () {
         let result = await supertest(web)
         .post('/api/users')
         .send({
-            username: 'wandi',
-            password: 'wandi',
-            name: 'wandi',
+            username: 'test',
+            password: 'test',
+            name: 'test',
         });
         
         // Expectations to match the response
         expect(result.status).toBe(200);
-        expect(result.body.data.username).toBe('wandi');
-        expect(result.body.data.name).toBe('wandi');
+        expect(result.body.data.username).toBe('test');
+        expect(result.body.data.name).toBe('test');
         expect(result.body.data.password).toBeUndefined();  // Password should not be returned
 
         result = await supertest(web)
         .post('/api/users')
         .send({
-            username: 'wandi',
-            password: 'wandi',
-            name: 'wandi',
+            username: 'test',
+            password: 'test',
+            name: 'test',
         });
 
         logger.info(result.body);
@@ -78,5 +74,74 @@ describe('POST /api/users', function () {
         // Expectations to match the response
         expect(result.status).toBe(400);
         expect(result.body.errors).toBeDefined();  // Must Have errors
+    });
+
+    describe('POST /api/users/login', function () {
+        beforeEach(async () => {
+            // Create From utils
+            await createTestUser();
+        });
+        
+        afterEach(async () => {
+            // Delete From utils
+            await removeTestUser();
+        });
+    
+        it('should can login', async () => {
+            const result = await supertest(web)
+                .post('/api/users/login')
+                .send({
+                    username: "test",
+                    password: "test"
+                });
+    
+            logger.info(result.body);
+    
+            expect(result.status).toBe(200);
+            expect(result.body.data.token).toBeDefined();
+            expect(result.body.data.token).not.toBe("test");
+        });
+    
+        it('should reject login if request is invalid', async () => {
+            const result = await supertest(web)
+                .post('/api/users/login')
+                .send({
+                    username: "",
+                    password: ""
+                });
+    
+            logger.info(result.body);
+    
+            expect(result.status).toBe(400);
+            expect(result.body.errors).toBeDefined();
+        });
+    
+        it('should reject login if password is wrong', async () => {
+            const result = await supertest(web)
+                .post('/api/users/login')
+                .send({
+                    username: "test",
+                    password: "salah"
+                });
+    
+            logger.info(result.body);
+    
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBeDefined();
+        });
+    
+        it('should reject login if username is wrong', async () => {
+            const result = await supertest(web)
+                .post('/api/users/login')
+                .send({
+                    username: "salah",
+                    password: "salah"
+                });
+    
+            logger.info(result.body);
+    
+            expect(result.status).toBe(401);
+            expect(result.body.errors).toBeDefined();
+        });
     });
 });

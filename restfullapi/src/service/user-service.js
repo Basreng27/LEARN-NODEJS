@@ -1,9 +1,11 @@
-import { registerUserValidation } from "../validation/user-validation.js"
+import { loginUserValidation, registerUserValidation } from "../validation/user-validation.js"
 import { validate } from "../validation/validation.js"
 import { prismaClient } from "../application/database.js";
 import { ResponseError } from "../error/response-error.js"
 import bcrypt from 'bcrypt'
+import { v4 as uuid } from 'uuid'
 
+// For Register
 const register = async (request) => {
     // Validate
     const user = validate(registerUserValidation, request)
@@ -33,7 +35,52 @@ const register = async (request) => {
     })
 }
 
+// For Login
+const login = async (request) => {
+    // Validate
+    const loginRequest = validate(loginUserValidation, request)
+
+    // Find User With The Same Username
+    const user = await prismaClient.user.findUnique({
+        where:{
+            username: loginRequest.username
+        },
+        select: {
+            username: true,
+            password: true,
+        }
+    })
+
+    if (!user) {
+        throw new ResponseError(401, "Username OR Password Wrong")
+    }
+    
+    // Bcyrpt Compare
+    isPasswordValid = await bcrypt.compare(loginRequest.password, user.password)    
+    
+    if (!isPasswordValid) {
+        throw new ResponseError(401, "Username OR Password Wrong")
+    }
+
+    // Create Token
+    const token = uuid().toString()
+
+    // Update Token In Table User
+    return await prismaClient.user.update({
+        data: {
+            token: token
+        },
+        where: {
+            username: user.username
+        },
+        select: { // Return What Will Show
+            token: true,
+        }
+    });
+}
+
 // Using "default" If Can More Than 1
 export default {
-    register
+    register,
+    login
 }
