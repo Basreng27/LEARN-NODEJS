@@ -31,7 +31,30 @@ export const getTestUser = async () => {
     })
 }
 
+// Remove Contact Test
+const removeAllTestContacts = async () => {
+    await prismaClient.contact.deleteMany({
+        where: {
+            username_user: 'test'
+        }
+    });
+}
+
+// Create Contact Test
+export const createTestContact = async () => {
+    await prismaClient.contact.create({
+        data: {
+            username: "test",
+            first_name: "test",
+            last_name: "test",
+            email: "test@pzn.com",
+            phone: "080900000"
+        }
+    })
+}
+
 export {
     removeTestUser,
-    createTestUser
+    createTestUser,
+    removeAllTestContacts
 }
