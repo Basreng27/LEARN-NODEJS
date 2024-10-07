@@ -9,6 +9,7 @@ userRouter.use(authMiddleware); // Using Middleware
 
 userRouter.get('/api/users/current', userController.get);
 userRouter.patch('/api/users/current', userController.update);
+userRouter.delete('/api/users/logout', userController.logout);
 
 export {
     userRouter

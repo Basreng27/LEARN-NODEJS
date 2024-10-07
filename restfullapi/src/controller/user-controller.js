@@ -64,10 +64,25 @@ const update = async (req, res, next) => {
     }
 }
 
+// For Get Data
+const logout = async (req, res, next) => {
+    try {
+        // Send To Service
+        await userService.logout(req.user.username);
+
+        res.status(200).json({
+            data: "OK"
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 // Using "default" If Can More Than 1
 export default {
     register,
     login,
     get,
-    update
+    update,
+    logout
 }
