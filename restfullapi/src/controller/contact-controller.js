@@ -1,5 +1,6 @@
 import contactService from "../service/contact-service.js";
 
+// Create
 const create = async (req, res, next) => {
     try {
         const user = req.user;
@@ -15,6 +16,7 @@ const create = async (req, res, next) => {
     }
 }
 
+// Get
 const get = async (req, res, next) => {
     try {
         const user = req.user;
@@ -30,7 +32,28 @@ const get = async (req, res, next) => {
     }
 }
 
+// Update
+const update = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const contactId = req.params.contactId;
+        const request = req.body;
+        
+        // Add Id
+        request.id = contactId
+        
+        const result = await contactService.update(user, request);
+        
+        res.status(200).json({
+            data: result
+        })
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
-    get
+    get,
+    update
 }
