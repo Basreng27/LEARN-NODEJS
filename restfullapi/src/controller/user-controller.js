@@ -1,5 +1,6 @@
 import userService from '../service/user-service.js'
 
+// For Register
 const register = async (req, res, next) => {
     try {
         // Send To Service
@@ -14,6 +15,7 @@ const register = async (req, res, next) => {
     }
 }
 
+// For Login
 const login = async (req, res, next) => {
     try {
         // Send To Service
@@ -28,8 +30,25 @@ const login = async (req, res, next) => {
     }
 }
 
+// For Get Data
+const get = async (req, res, next) => {
+    try {
+        // Send To Service
+        const username = req.user.username;
+
+        const result = await userService.get(username);
+
+        res.status(200).json({
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 // Using "default" If Can More Than 1
 export default {
     register,
-    login
+    login,
+    get
 }
