@@ -54,7 +54,7 @@ model Address {
   street      String?
   city        String? // If Can Null Add ? After "String"
   province    String? // If Can Null Add ? After "String"
-  contry      String // If Can Null Add ? After "String"
+  country     String // If Can Null Add ? After "String"
   postal_code String?
 
   // Foreign Key
