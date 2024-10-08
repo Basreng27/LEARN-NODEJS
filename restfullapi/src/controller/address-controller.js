@@ -60,10 +60,26 @@ const remove = async (req, res, next) => {
         const contactId = req.params.contactId // Get From URL Params
         const addressId = req.params.addressId // Get From URL Params
         
-        const result = await addressService.remove(user, contactId, addressId);
+        await addressService.remove(user, contactId, addressId);
         
         res.status(200).json({
             data: "OK"
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
+// List
+const list = async (req, res, next) => {
+    try {
+        const user = req.user;
+        const contactId = req.params.contactId // Get From URL Params
+        
+        const result = await addressService.list(user, contactId);
+        
+        res.status(200).json({
+            data: result
         });
     } catch (e) {
         next(e);
@@ -74,5 +90,6 @@ export default {
     create,
     get,
     update,
-    remove
+    remove,
+    list
 }
