@@ -1,3 +1,7 @@
 resfullapi/node_modules/
 resfullapi/.env
 resfullapi/package-lock.json
+
+rest-komik-api/node_modules/
+rest-komik-api/.env
+rest-komik-api/package-lock.json
