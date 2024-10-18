@@ -1,0 +1,18 @@
+{
+  "name": "rest-komik-api",
+  "version": "1.0.0",
+  "description": "Komik API Learn",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Rayandra Wandi Marselana",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.1",
+    "joi": "^17.13.3",
+    "uuid": "^10.0.0",
+    "winston": "^3.15.0"
+  }
+}
