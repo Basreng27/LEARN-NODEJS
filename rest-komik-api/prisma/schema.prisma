@@ -12,3 +12,48 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+
+  Bookmark Bookmark[]
+
+  @@map("users")
+}
+
+model Genre {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Comic Comic[]
+
+  @@map("genres")
+}
+
+model Comic {
+  id       Int    @id @default(autoincrement())
+  name     String
+  images   Bytes?
+  type     String
+  genre_id Int
+
+  genre    Genre      @relation(fields: [genre_id], references: [id])
+  Bookmark Bookmark[]
+
+  @@map("comics")
+}
+
+model Bookmark {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  comic_id     Int
+  last_chapter Int?
+  updated_at   DateTime
+
+  user  User  @relation(fields: [user_id], references: [id])
+  comic Comic @relation(fields: [comic_id], references: [id])
+
+  @@map("bookmarks")
+}
