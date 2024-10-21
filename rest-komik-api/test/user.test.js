@@ -135,7 +135,7 @@ describe('POST /api/comic/login', () => {
     })
 })
 
-describe('GET /api/comic/user/:id', () => {
+describe('GET /api/comic/user/' + 1, () => {
     beforeEach(async () => {
         await createTestUser();
     });
@@ -146,17 +146,17 @@ describe('GET /api/comic/user/:id', () => {
 
     it('should can get data', async () => {
         const result = await supertest(web)
-            .get('/api/comic/user/' + 38)
+            .get('/api/comic/user/' + 1)
             .set('Authorization', 'test');
 
         expect(result.status).toBe(200);
-        expect(result.body.data.id).toBe(38);
+        expect(result.body.data.id).toBe(1);
         expect(result.body.data.username).toBe("test");
     })
 
     it('reject invalid token', async () => {
         const result = await supertest(web)
-            .get('/api/comic/user/' + 38)
+            .get('/api/comic/user/' + 1)
             .set('Authorization', 'test123');
 
         expect(result.status).toBe(401);
@@ -164,7 +164,7 @@ describe('GET /api/comic/user/:id', () => {
     })
 })
 
-describe('PATCH /api/comic/user/:id', function () {
+describe('PATCH /api/comic/user/' + 1, function () {
     beforeEach(async () => {
         await createTestUser();
     });
@@ -192,6 +192,36 @@ describe('PATCH /api/comic/user/:id', function () {
             .patch("/api/comic/user/" + 1)
             .set("Authorization", "salah")
             .send({});
+
+        expect(result.status).toBe(401);
+    });
+});
+
+describe('DELETE /api/comic/logout/:id', function () {
+    beforeEach(async () => {
+        await createTestUser();
+    });
+
+    afterEach(async () => {
+        await removeTestUser();
+    });
+
+    it('should can logout', async () => {
+        const result = await supertest(web)
+            .delete('/api/comic/logout/' + 1)
+            .set('Authorization', 'test');
+
+        expect(result.status).toBe(200);
+        expect(result.body.data).toBe("OK");
+
+        const user = await getTestUser();
+        expect(user.token).toBeNull();
+    });
+
+    it('reject logout if token is invalid', async () => {
+        const result = await supertest(web)
+            .delete('/api/comic/logout/' + 1)
+            .set('Authorization', 'test123');
 
         expect(result.status).toBe(401);
     });

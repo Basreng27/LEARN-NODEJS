@@ -8,6 +8,7 @@ userRouter.use(authMiddleware)
 
 userRouter.get('/api/comic/user/:id', userController.get)
 userRouter.patch('/api/comic/user/:id', userController.update)
+userRouter.delete('/api/comic/logout/:id', userController.logout)
 
 export {
     userRouter
