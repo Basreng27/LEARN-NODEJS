@@ -1,5 +1,5 @@
 import { describe, afterEach, it, beforeEach } from 'node:test'
-import { creteTestUser, removeTestUser } from './test-utils.js'
+import { createTestUser, removeTestUser } from './test-utils.js'
 import supertest from 'supertest'
 import { expect } from 'expect';
 import { web } from '../src/app/web.js'
@@ -77,7 +77,7 @@ describe('POST /api/comic/regist', () => {
 
 describe('POST /api/comic/login', () => {
     beforeEach(async () => {
-        await creteTestUser();
+        await createTestUser();
     })
 
     afterEach(async () => {
@@ -134,3 +134,31 @@ describe('POST /api/comic/login', () => {
     })
 })
 
+describe('GET /api/comic/user/:id', () => {
+    beforeEach(async () => {
+        await createTestUser();
+    });
+
+    afterEach(async () => {
+        await removeTestUser();
+    });
+
+    it('should can get data', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/user/' + 38)
+            .set('Authorization', 'test');
+
+        expect(result.status).toBe(200);
+        expect(result.body.data.id).toBe(38);
+        expect(result.body.data.username).toBe("test");
+    })
+
+    it('reject invalid token', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/user/' + 38)
+            .set('Authorization', 'test123');
+
+        expect(result.status).toBe(401);
+        expect(result.body.error).toBeDefined();
+    })
+})

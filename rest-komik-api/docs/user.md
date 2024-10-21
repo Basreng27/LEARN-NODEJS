@@ -89,7 +89,7 @@
 
 #
 ## Get
-- Endpoint: GET /api/comic/users/:id
+- Endpoint: GET /api/comic/user/:id
 - Headers:
     - Authorization : token
 - Response Body Success :

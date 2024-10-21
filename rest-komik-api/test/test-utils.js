@@ -9,7 +9,7 @@ export const removeTestUser = async () => {
     })
 }
 
-export const creteTestUser = async () => {
+export const createTestUser = async () => {
     await prismaClient.user.create({
         data: {
             username: "test",
