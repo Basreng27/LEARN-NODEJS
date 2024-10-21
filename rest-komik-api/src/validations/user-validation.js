@@ -1,20 +1,26 @@
 import Joi from "joi"
 
-const registerValidation = Joi.object({
+const registerUserValidation = Joi.object({
     username: Joi.string().max(255).required(),
     password: Joi.string().max(255).required(),
     password_confirm: Joi.string().max(255).required(),
 })
 
-const loginValidation = Joi.object({
+const loginUserValidation = Joi.object({
     username: Joi.string().max(255).required(),
     password: Joi.string().max(255).required(),
 })
 
-const getValidation = Joi.number().min(1).positive().required()
+const getUserValidation = Joi.number().min(1).positive().required()
+
+const updateUserValidation = Joi.object({
+    username: Joi.string().max(255).optional(),
+    password: Joi.string().max(255).optional(),
+})
 
 export {
-    registerValidation,
-    loginValidation,
-    getValidation
+    registerUserValidation,
+    loginUserValidation,
+    getUserValidation,
+    updateUserValidation
 }

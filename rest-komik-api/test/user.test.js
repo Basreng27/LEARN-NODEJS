@@ -1,8 +1,9 @@
 import { describe, afterEach, it, beforeEach } from 'node:test'
-import { createTestUser, removeTestUser } from './test-utils.js'
+import { createTestUser, getTestUser, removeTestUser } from './test-utils.js'
 import supertest from 'supertest'
 import { expect } from 'expect';
 import { web } from '../src/app/web.js'
+import bcrypt from 'bcrypt'
 
 describe('POST /api/comic/regist', () => {
     afterEach(async () => {
@@ -162,3 +163,36 @@ describe('GET /api/comic/user/:id', () => {
         expect(result.body.error).toBeDefined();
     })
 })
+
+describe('PATCH /api/comic/user/:id', function () {
+    beforeEach(async () => {
+        await createTestUser();
+    });
+
+    afterEach(async () => {
+        await removeTestUser();
+    });
+
+    it('should can update', async () => {
+        const result = await supertest(web)
+            .patch("/api/comic/user/" + 1)
+            .set("Authorization", "test")
+            .send({
+                password: "testtest"
+            });
+
+        expect(result.status).toBe(200);
+
+        const user = await getTestUser();
+        expect(await bcrypt.compare("testtest", user.password)).toBe(true);
+    });
+
+    it('reject if request is not valid', async () => {
+        const result = await supertest(web)
+            .patch("/api/comic/user/" + 1)
+            .set("Authorization", "salah")
+            .send({});
+
+        expect(result.status).toBe(401);
+    });
+});

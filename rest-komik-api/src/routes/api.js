@@ -7,6 +7,7 @@ const userRouter = new express.Router();
 userRouter.use(authMiddleware)
 
 userRouter.get('/api/comic/user/:id', userController.get)
+userRouter.patch('/api/comic/user/:id', userController.update)
 
 export {
     userRouter

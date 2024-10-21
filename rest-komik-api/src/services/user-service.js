@@ -1,12 +1,12 @@
 import { validate } from "../validations/validation.js"
-import { getValidation, loginValidation, registerValidation } from "../validations/user-validation.js"
+import { getUserValidation, loginUserValidation, registerUserValidation, updateUserValidation } from "../validations/user-validation.js"
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 import bcrypt from "bcrypt"
 import { v4 as uuid } from 'uuid'
 
 const register = async (request) => {
-    const user = validate(registerValidation, request)
+    const user = validate(registerUserValidation, request)
 
     const countUser = await prismaClient.user.count({
         where: {
@@ -34,7 +34,7 @@ const register = async (request) => {
 }
 
 const login = async (request) => {
-    const loginRequest = validate(loginValidation, request)
+    const loginRequest = validate(loginUserValidation, request)
 
     const user = await prismaClient.user.findUnique({
         where: {
@@ -72,7 +72,7 @@ const login = async (request) => {
 }
 
 const get = async (id) => {
-    const userValidate = validate(getValidation, id)
+    const userValidate = validate(getUserValidation, id)
 
     const user = prismaClient.user.findUnique({
         where: {
@@ -85,14 +85,51 @@ const get = async (id) => {
     })
 
     if (!user) {
-        throw new ResponseError(404, "User not found")
+        throw new ResponseError(404, "User is not found")
     }
 
     return user
 }
 
+const update = async (id, request) => {
+    const user = validate(updateUserValidation, request)
+    const userValidateId = validate(getUserValidation, id)
+
+    const totalUser = prismaClient.user.count({
+        where: {
+            id: userValidateId
+        }
+    })
+
+    if (totalUser > 0) {
+        throw new ResponseError(404, "User is not found")
+    }
+
+    const data = {}
+
+    if (user.username) {
+        data.username = user.username
+    }
+
+    if (user.password) {
+        data.password = await bcrypt.hash(user.password, 10)
+    }
+
+    return await prismaClient.user.update({
+        where: {
+            id: userValidateId
+        },
+        data: data,
+        select: {
+            id: true,
+            username: true
+        }
+    })
+}
+
 export default {
     register,
     login,
-    get
+    get,
+    update
 }
