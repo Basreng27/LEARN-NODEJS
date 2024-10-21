@@ -14,7 +14,7 @@ export const creteTestUser = async () => {
         data: {
             username: "test",
             password: await bcrypt.hash("test", 10),
-            password_confirm: await bcrypt.hash("test", 10),
+            token: "test",
         }
     })
 }
