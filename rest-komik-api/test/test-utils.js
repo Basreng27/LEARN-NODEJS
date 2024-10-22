@@ -27,3 +27,24 @@ export const getTestUser = async () => {
         }
     })
 }
+
+export const removeTestGenre = async () => {
+    await prismaClient.genre.deleteMany()
+}
+
+// export const createTestGenre = async () => {
+//     await prismaClient.genre.create({
+//         data: {
+//             id: 1,
+//             name: "test genre",
+//         }
+//     })
+// }
+
+// export const getTestGenre = async () => {
+//     return prismaClient.genre.findUnique({
+//         where: {
+//             id: 1
+//         }
+//     })
+// }
