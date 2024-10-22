@@ -1,5 +1,5 @@
 import { validate } from "../validations/validation.js"
-import { createGenreValidation, getGenreValidation } from "../validations/genre-validation.js"
+import { createGenreValidation, getGenreValidation, searchGenreValidation } from "../validations/genre-validation.js"
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 
@@ -65,8 +65,50 @@ const get = async (id) => {
     return genre
 }
 
+const searchAndAll = async (request) => {
+    request = validate(searchGenreValidation, request)
+
+    const skip = (request.page - 1) * request.size
+
+    const filters = []
+
+    if (request.name) {
+        filters.push({
+            name: {
+                contains: request.name,
+                mode: 'insensitive' // Optional: if you want case-insensitive search
+            }
+        })
+    }
+
+    const genre = await prismaClient.genre.findMany({
+        where: {
+            AND: filters
+        },
+        take: request.size,
+        skip: skip,
+    })
+
+    const totalItem = await prismaClient.genre.count({
+        where: {
+            AND: filters
+        }
+    })
+
+    return {
+        status: true,
+        data: genre,
+        paging: {
+            page: request.page,
+            total_item: totalItem,
+            total_page: Math.ceil(totalItem / request.size),
+        }
+    }
+}
+
 export default {
     create,
     update,
-    get
+    get,
+    searchAndAll
 }

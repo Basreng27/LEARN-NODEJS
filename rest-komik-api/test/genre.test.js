@@ -1,5 +1,5 @@
 import { describe, afterEach, it, beforeEach } from 'node:test'
-import { createTestGenre, createTestUser, removeTestGenre, removeTestUser } from './test-utils.js'
+import { createManyTestGenres, createTestGenre, createTestUser, removeTestGenre, removeTestUser } from './test-utils.js'
 import supertest from 'supertest'
 import { expect } from 'expect';
 import { web } from '../src/app/web.js'
@@ -115,5 +115,59 @@ describe('GET /api/comic/genre/:id', () => {
             
         expect(result.status).toBe(404);
         expect(result.body.error).toBeDefined()
+    })
+})
+
+describe('GET /api/comic/genre', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createManyTestGenres();
+    })
+
+    afterEach(async () => {
+        await removeTestGenre();
+        await removeTestUser();
+    })
+
+    it('should get all', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/genre')
+            .set('Authorization', 'test')
+            
+        expect(result.status).toBe(200)
+        expect(result.body.data.length).toBe(10)
+        expect(result.body.paging.page).toBe(1)
+        expect(result.body.paging.total_page).toBe(2)
+        expect(result.body.paging.total_item).toBe(15)
+    })
+
+    it('should get page 2', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/genre')
+            .query({
+                page: 2
+            })
+            .set('Authorization', 'test')
+            
+        expect(result.status).toBe(200)
+        expect(result.body.data.length).toBe(5)
+        expect(result.body.paging.page).toBe(2)
+        expect(result.body.paging.total_page).toBe(2)
+        expect(result.body.paging.total_item).toBe(15)
+    })
+
+    it('should search using name', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/genre')
+            .query({
+                name: "test 1"
+            })
+            .set('Authorization', 'test')
+            
+        expect(result.status).toBe(200)
+        expect(result.body.data.length).toBe(6)
+        expect(result.body.paging.page).toBe(1)
+        expect(result.body.paging.total_page).toBe(1)
+        expect(result.body.paging.total_item).toBe(6)
     })
 })

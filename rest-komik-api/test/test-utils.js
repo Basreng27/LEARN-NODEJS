@@ -41,10 +41,14 @@ export const createTestGenre = async () => {
     })
 }
 
-// export const getTestGenre = async () => {
-//     return prismaClient.genre.findUnique({
-//         where: {
-//             id: 1
-//         }
-//     })
-// }
+export const createManyTestGenres = async () => {
+    for (let i = 0; i < 15; i++) {
+        await prismaClient.genre.create({
+            data: {
+                id: i,
+                name: `test ${i}`,
+            }
+        })
+    }
+}
+

@@ -153,7 +153,7 @@ const search = async (user, request) => {
     if (request.phone) {
         filters.push({
             phone: {
-                contains: request.phone
+                contains: request.phone // "contains" = like
             }
         })
     }

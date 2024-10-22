@@ -43,8 +43,29 @@ const get = async (req, res, next) => {
     }
 }
 
+const searchAndAll = async (req, res, next) => {
+    try {
+        const request = {
+            name: req.query.name,
+            page: req.query.page,
+            size: req.query.size,
+        }
+        
+        const result = await genreService.searchAndAll(request)
+
+        res.status(200).json({
+            status: true,
+            data: result.data,
+            paging: result.paging
+        })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export default {
     create,
     update,
-    get
+    get,
+    searchAndAll
 }
