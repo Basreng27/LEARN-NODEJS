@@ -106,9 +106,34 @@ const searchAndAll = async (request) => {
     }
 }
 
+const remove = async (id) => {
+    const genreValidateId = validate(getGenreValidation, id)
+
+    const genre = await prismaClient.genre.findFirst({
+        where:{
+            id: genreValidateId
+        },
+        select: {
+            id: true,
+            name: true,
+        }
+    })
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+    return await prismaClient.genre.delete({
+        where: {
+            id: genreValidateId
+        }
+    })
+}
+
 export default {
     create,
     update,
     get,
-    searchAndAll
+    searchAndAll,
+    remove
 }

@@ -52,3 +52,10 @@ export const createManyTestGenres = async () => {
     }
 }
 
+export const getTestGenre = async () => {
+    return prismaClient.genre.findUnique({
+        where: {
+            id: 1
+        }
+    })
+}

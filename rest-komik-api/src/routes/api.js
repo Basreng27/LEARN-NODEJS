@@ -15,6 +15,7 @@ userRouter.post('/api/comic/genre', genreController.create)
 userRouter.put('/api/comic/genre/:id', genreController.update)
 userRouter.get('/api/comic/genre/:id', genreController.get)
 userRouter.get('/api/comic/genre', genreController.searchAndAll)
+userRouter.delete('/api/comic/genre/:id', genreController.remove)
 
 export {
     userRouter
