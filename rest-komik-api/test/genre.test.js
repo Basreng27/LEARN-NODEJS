@@ -82,7 +82,7 @@ describe('PUT /api/comic/genre/:id', () => {
             .send({
                 name: '',
             });
-                
+            
         expect(result.status === 404 || result.status === 400).toBe(true);
         expect(result.body.error).toBeDefined()
     })
