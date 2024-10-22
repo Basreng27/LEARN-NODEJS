@@ -28,7 +28,23 @@ const update = async (req, res, next) => {
     }
 }
 
+const get = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        
+        const result = await genreService.get(id)
+
+        res.status(200).json({
+            status: true,
+            data: result
+        })
+    } catch (e) {
+        next(e)
+    }
+}
+
 export default {
     create,
-    update
+    update,
+    get
 }

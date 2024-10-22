@@ -80,35 +80,6 @@
 ```
 
 #
-## Get ALL
-- Endpoint : GET /api/comic/genres
-- Headers :
-    - Authorization : token
-- Response Body Success :
-```json
-{
-    "status": true,
-    "data": [
-        {
-            "id": 1,
-            "name": "test genre"
-        },
-        {
-            "id": 2,
-            "name": "test genre 3"
-        },
-    ]
-}
-```
-- Response Body Error :
-```json
-{
-    "status": false,
-    "error": "Genre is not found"
-}
-```
-
-#
 ## Search
 - Endpoint : POST /api/comic/genres
 - Headers :

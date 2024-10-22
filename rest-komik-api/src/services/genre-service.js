@@ -22,6 +22,10 @@ const update = async (id, request) => {
     const genre = await prismaClient.genre.findFirst({
         where:{
             id: genreValidateId
+        },
+        select: {
+            id: true,
+            name: true,
         }
     })
 
@@ -41,7 +45,28 @@ const update = async (id, request) => {
     })
 }
 
+const get = async (id) => {
+    const genreValidateId = validate(getGenreValidation, id)
+
+    const genre = await prismaClient.genre.findFirst({
+        where:{
+            id: genreValidateId
+        },
+        select: {
+            id: true,
+            name: true,
+        }
+    })
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+    return genre
+}
+
 export default {
     create,
-    update
+    update,
+    get
 }
