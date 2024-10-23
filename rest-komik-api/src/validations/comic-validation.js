@@ -1,5 +1,7 @@
 import Joi from "joi"
 
+const getComicValidation = Joi.number().min(1).positive().required()
+
 const createComicValidation = Joi.object({
     name: Joi.string().max(255).required(),
     image: Joi.binary().optional(),
@@ -13,8 +15,6 @@ const updateComicValidation = Joi.object({
     type: Joi.string().valid('Manhua', 'Manga', 'Manhwa').optional(),
     genre_id: Joi.number().min(1).positive().optional(),
 })
-
-const getComicValidation = Joi.number().min(1).positive().required()
 
 const searchComicValidation = Joi.object({
     page: Joi.number().min(1).positive().default(1),
