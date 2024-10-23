@@ -71,11 +71,7 @@ export const createTestComic = async () => {
             name: "test",
             image: null,
             type: "Manhwa",
-            genre_id: {
-                connect: {
-                    id: 1
-                }
-            },
+            genre_id: 1
         }
     })
 }
@@ -88,11 +84,7 @@ export const createManyTestComics = async () => {
                 name: `test ${i}`,
                 image: null,
                 type: "Manhwa",
-                genre_id: {
-                    connect: {
-                        id: 1
-                    }
-                },
+                genre_id: 1
             }
         })
     }

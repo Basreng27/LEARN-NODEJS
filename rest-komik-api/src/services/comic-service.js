@@ -3,6 +3,12 @@ import { createComicValidation, getComicValidation, searchComicValidation } from
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 
+const getGenreById = async (id) => {
+    return await prismaClient.genre.findUnique({
+        where: { id: id },
+    });
+};
+
 const create = async (request, file) => {
     const comic = validate(createComicValidation, request)
 
@@ -15,6 +21,12 @@ const create = async (request, file) => {
     //     comic.image = comic.image.toString('base64');
     // }
 
+    const genre = await getGenreById(comic.genre_id);
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
     const newComic = await prismaClient.comic.create({
         data: comic,
         select: {
@@ -25,10 +37,6 @@ const create = async (request, file) => {
             genre_id: true,
         }
     })
-
-    const genre = await prismaClient.genre.findUnique({
-        where: { id: newComic.genre_id }
-    });
 
     return {
         id: newComic.id,
@@ -42,35 +50,62 @@ const create = async (request, file) => {
     };
 }
 
-// const update = async (id, request) => {
-//     const comicValidate = validate(createComicValidation, request)
-//     const comicValidateId = validate(getComicValidation, id)
+const update = async (id, request, file) => {
+    const comicValidate = validate(createComicValidation, request)
+    const comicValidateId = validate(getComicValidation, id)
 
-//     const comic = await prismaClient.comic.findFirst({
-//         where:{
-//             id: comicValidateId
-//         },
-//         select: {
-//             id: true,
-//             name: true,
-//         }
-//     })
+    const comic = await prismaClient.comic.findFirst({
+        where:{
+            id: comicValidateId
+        },
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            type: true,
+            genre_id: true,
+        }
+    })
 
-//     if (!genre) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!comic) {
+        throw new ResponseError(404, "Comic is not found")
+    }
 
-//     return await prismaClient.comic.update({
-//         where: {
-//             id: comicValidateId
-//         },
-//         data: comicValidate,
-//         select: {
-//             id: true,
-//             name: true
-//         }
-//     })
-// }
+    if (file && file.buffer) {
+        comicValidate.image = file.buffer; // Save Buffer
+    } 
+
+    const genre = await getGenreById(comicValidate.genre_id);
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+    const updateComic = await prismaClient.comic.update({
+        where: {
+            id: comicValidateId
+        },
+        data: comicValidate,
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            type: true,
+            genre_id: true,
+        }
+    })
+
+    return {
+        id: updateComic.id,
+        name: updateComic.name,
+        image: updateComic.image,
+        type: updateComic.type,
+        genre: {
+            id: genre.id,
+            name: genre.name
+        }
+    };
+}
 
 // const get = async (id) => {
 //     const comicValidateId = validate(getComicValidation, id)
@@ -159,7 +194,7 @@ const create = async (request, file) => {
 
 export default {
     create,
-    // update,
+    update,
     // get,
     // searchAndAll,
     // remove

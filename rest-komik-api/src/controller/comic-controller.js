@@ -26,20 +26,26 @@ const create = async (req, res, next) => {
     })
 }
 
-// const update = async (req, res, next) => {
-//     try {
-//         const id = req.params.id
-        
-//         const result = await comicService.update(id, req.body)
+const update = async (req, res, next) => {
+    upload(req, res, async (err) => {
+        if (req.file && err) {
+            throw new ResponseError(400, "Failed Upload")
+        }
 
-//         res.status(200).json({
-//             status: true,
-//             data: result
-//         })
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+        try {
+            const id = req.params.id
+            
+            const result = await comicService.update(id, req.body, req.file)
+    
+            res.status(200).json({
+                status: true,
+                data: result
+            })
+        } catch (e) {
+            next(e)
+        }
+    })
+}
 
 // const get = async (req, res, next) => {
 //     try {
@@ -93,7 +99,7 @@ const create = async (req, res, next) => {
 
 export default {
     create,
-    // update,
+    update,
     // get,
     // searchAndAll,
     // remove

@@ -19,7 +19,7 @@ userRouter.get('/api/comic/genre', genreController.searchAndAll)
 userRouter.delete('/api/comic/genre/:id', genreController.remove)
 
 userRouter.post('/api/comic', comicController.create)
-// userRouter.put('/api/comic/:id', comicController.update)
+userRouter.patch('/api/comic/:id', comicController.update)
 // userRouter.get('/api/comic/:id', comicController.get)
 // userRouter.get('/api/comic', comicController.searchAndAll)
 // userRouter.delete('/api/comic/:id', comicController.remove)
