@@ -26,5 +26,6 @@ const searchComicValidation = Joi.object({
 export {
     createComicValidation,
     getComicValidation,
-    searchComicValidation
+    searchComicValidation,
+    updateComicValidation
 }

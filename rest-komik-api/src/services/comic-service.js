@@ -1,5 +1,5 @@
 import { validate } from "../validations/validation.js"
-import { createComicValidation, getComicValidation, searchComicValidation } from "../validations/comic-validation.js"
+import { createComicValidation, getComicValidation, searchComicValidation, updateComicValidation } from "../validations/comic-validation.js"
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 
@@ -51,7 +51,7 @@ const create = async (request, file) => {
 }
 
 const update = async (id, request, file) => {
-    const comicValidate = validate(createComicValidation, request)
+    const comicValidate = validate(updateComicValidation, request)
     const comicValidateId = validate(getComicValidation, id)
 
     const comic = await prismaClient.comic.findFirst({
@@ -107,25 +107,44 @@ const update = async (id, request, file) => {
     };
 }
 
-// const get = async (id) => {
-//     const comicValidateId = validate(getComicValidation, id)
+const get = async (id) => {
+    const comicValidateId = validate(getComicValidation, id)
 
-//     const comic = await prismaClient.comic.findFirst({
-//         where:{
-//             id: comicValidateId
-//         },
-//         select: {
-//             id: true,
-//             name: true,
-//         }
-//     })
+    const comic = await prismaClient.comic.findFirst({
+        where:{
+            id: comicValidateId
+        },
+        select: {
+            id: true,
+            name: true,
+            image: true,
+            type: true,
+            genre_id: true,
+        }
+    })
 
-//     if (!genre) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!comic) {
+        throw new ResponseError(404, "Genre is not found")
+    }
 
-//     return genre
-// }
+    const genre = await getGenreById(comic.genre_id);
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+
+    return {
+        id: comic.id,
+        name: comic.name,
+        image: comic.image,
+        type: comic.type,
+        genre: {
+            id: genre.id,
+            name: genre.name
+        }
+    };
+}
 
 // const searchAndAll = async (request) => {
 //     request = validate(searchComicValidation, request)
@@ -195,7 +214,7 @@ const update = async (id, request, file) => {
 export default {
     create,
     update,
-    // get,
+    get,
     // searchAndAll,
     // remove
 }
