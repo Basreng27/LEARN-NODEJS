@@ -133,7 +133,6 @@ const get = async (id) => {
         throw new ResponseError(404, "Genre is not found")
     }
 
-
     return {
         id: comic.id,
         name: comic.name,
@@ -146,46 +145,80 @@ const get = async (id) => {
     };
 }
 
-// const searchAndAll = async (request) => {
-//     request = validate(searchComicValidation, request)
+const searchAndAll = async (request) => {
+    request = validate(searchComicValidation, request)
 
-//     const skip = (request.page - 1) * request.size
+    const skip = (request.page - 1) * request.size
 
-//     const filters = []
+    const filters = []
 
-//     if (request.name) {
-//         filters.push({
-//             name: {
-//                 contains: request.name,
-//                 mode: 'insensitive' // Optional: if you want case-insensitive search
-//             }
-//         })
-//     }
+    if (request.name) {
+        filters.push({
+            name: {
+                contains: request.name,
+                mode: 'insensitive' // Optional: if you want case-insensitive search
+            }
+        })
+    }
 
-//     const comic = await prismaClient.comic.findMany({
-//         where: {
-//             AND: filters
-//         },
-//         take: request.size,
-//         skip: skip,
-//     })
+    if (request.type) {
+        filters.push({
+            type: request.type,
+        })
+    }
 
-//     const totalItem = await prismaClient.comic.count({
-//         where: {
-//             AND: filters
-//         }
-//     })
+    if (request.genre_name) {
+        filters.push({
+            genre: {
+                name: {
+                    contains: request.genre_name,
+                    mode: 'insensitive'
+                }
+            }
+        })
+    }
 
-//     return {
-//         status: true,
-//         data: comic,
-//         paging: {
-//             page: request.page,
-//             total_item: totalItem,
-//             total_page: Math.ceil(totalItem / request.size),
-//         }
-//     }
-// }
+    const comics = await prismaClient.comic.findMany({
+        where: {
+            AND: filters
+        },
+        take: request.size,
+        skip: skip,
+    })
+    
+    // Get All Genre
+    const genres = await Promise.all(
+        comics.map(comic => getGenreById(comic.genre_id))
+    );
+
+    // Mix Comic And Genre
+    const comicsWithGenres = comics.map((comic, index) => ({
+        id: comic.id,
+        name: comic.name,
+        image: comic.image,
+        type: comic.type,
+        genre: {
+            id: genres[index]?.id,
+            name: genres[index]?.name,
+        },
+    }));
+
+    const totalItem = await prismaClient.comic.count({
+        where: {
+            AND: filters
+        }
+    })
+
+    return {
+        status: true,
+        data: comicsWithGenres,
+        paging: {
+            page: request.page,
+            total_item: totalItem,
+            total_page: Math.ceil(totalItem / request.size),
+        }
+    }
+}
 
 // const remove = async (id) => {
 //     const comicValidateId = validate(getComicValidation, id)
@@ -215,6 +248,6 @@ export default {
     create,
     update,
     get,
-    // searchAndAll,
+    searchAndAll,
     // remove
 }

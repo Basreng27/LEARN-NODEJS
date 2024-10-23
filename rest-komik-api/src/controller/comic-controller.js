@@ -62,25 +62,27 @@ const get = async (req, res, next) => {
     }
 }
 
-// const searchAndAll = async (req, res, next) => {
-//     try {
-//         const request = {
-//             name: req.query.name,
-//             page: req.query.page,
-//             size: req.query.size,
-//         }
+const searchAndAll = async (req, res, next) => {
+    try {
+        const request = {
+            name: req.query.name,
+            type: req.query.type,
+            genre_name: req.query.genre_name,
+            page: req.query.page,
+            size: req.query.size,
+        }
         
-//         const result = await comicService.searchAndAll(request)
+        const result = await comicService.searchAndAll(request)
 
-//         res.status(200).json({
-//             status: true,
-//             data: result.data,
-//             paging: result.paging
-//         })
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+        res.status(200).json({
+            status: true,
+            data: result.data,
+            paging: result.paging
+        })
+    } catch (e) {
+        next(e)
+    }
+}
 
 // const remove = async (req, res, next) => {
 //     try {
@@ -101,6 +103,6 @@ export default {
     create,
     update,
     get,
-    // searchAndAll,
+    searchAndAll,
     // remove
 }

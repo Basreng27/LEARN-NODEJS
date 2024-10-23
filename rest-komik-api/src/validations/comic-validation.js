@@ -21,6 +21,7 @@ const searchComicValidation = Joi.object({
     size: Joi.number().min(1).positive().max(100).default(10), 
     name: Joi.string().max(255).optional(),
     type: Joi.string().valid('Manhua', 'Manga', 'Manhwa').optional(),
+    genre_name: Joi.string().max(255).optional(),
 })
 
 export {
