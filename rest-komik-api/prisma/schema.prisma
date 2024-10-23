@@ -34,16 +34,22 @@ model Genre {
 }
 
 model Comic {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
-  images   Bytes?
-  type     String
+  image    Bytes?
+  type     ComicType
   genre_id Int
 
   genre    Genre      @relation(fields: [genre_id], references: [id])
   Bookmark Bookmark[]
 
   @@map("comics")
+}
+
+enum ComicType {
+  Manhua
+  Manga
+  Manhwa
 }
 
 model Bookmark {

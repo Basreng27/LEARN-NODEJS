@@ -59,3 +59,49 @@ export const getTestGenre = async () => {
         }
     })
 }
+
+export const removeTestComic = async () => {
+    await prismaClient.comic.deleteMany()
+}
+
+export const createTestComic = async () => {
+    await prismaClient.comic.create({
+        data: {
+            id: 1,
+            name: "test",
+            image: null,
+            type: "Manhwa",
+            genre_id: {
+                connect: {
+                    id: 1
+                }
+            },
+        }
+    })
+}
+
+export const createManyTestComics = async () => {
+    for (let i = 0; i < 15; i++) {
+        await prismaClient.comic.create({
+            data: {
+                id: i,
+                name: `test ${i}`,
+                image: null,
+                type: "Manhwa",
+                genre_id: {
+                    connect: {
+                        id: 1
+                    }
+                },
+            }
+        })
+    }
+}
+
+export const getTestComic = async () => {
+    return prismaClient.comic.findUnique({
+        where: {
+            id: 1
+        }
+    })
+}

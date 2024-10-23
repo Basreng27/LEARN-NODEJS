@@ -2,6 +2,7 @@ import express from 'express'
 import { authMiddleware } from '../middleware/auth-middleware.js';
 import userController from '../controller/user-controller.js';
 import genreController from '../controller/genre-controller.js';
+import comicController from '../controller/comic-controller.js';
 
 const userRouter = new express.Router();
 
@@ -16,6 +17,12 @@ userRouter.put('/api/comic/genre/:id', genreController.update)
 userRouter.get('/api/comic/genre/:id', genreController.get)
 userRouter.get('/api/comic/genre', genreController.searchAndAll)
 userRouter.delete('/api/comic/genre/:id', genreController.remove)
+
+userRouter.post('/api/comic', comicController.create)
+// userRouter.put('/api/comic/:id', comicController.update)
+// userRouter.get('/api/comic/:id', comicController.get)
+// userRouter.get('/api/comic', comicController.searchAndAll)
+// userRouter.delete('/api/comic/:id', comicController.remove)
 
 export {
     userRouter

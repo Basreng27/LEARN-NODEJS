@@ -101,45 +101,6 @@
 ```
 
 #
-## Get All
-- Endpoint : GET /api/comic/comics
-- Headers : 
-    - Authorization : token
-- Response Body Success :
-```json
-{
-    "status": true,
-    "data": [
-        {
-            "name": "test comic",
-            "image": "image test",
-            "type": "test",
-            "genre_id": {
-                "id": 1,
-                "name": "test genre"
-            }
-        },
-        {
-            "name": "test comic 2",
-            "image": "image test 2",
-            "type": "test 2",
-            "genre_id": {
-                "id": 2,
-                "name": "test genre 2"
-            }
-        }
-    ]
-}
-```
-- Response Body Error :
-```json
-{
-    "status": false,
-    "error": "Comic is not found"
-}
-```
-
-#
 ## Search
 - Endpoint : POST /api/comic/comics
 - Headers :

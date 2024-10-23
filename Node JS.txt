@@ -16,23 +16,26 @@
         npm install joi
     => For API
         npm install express (Package)
-        npm install --save-dev @types/express
-        npm install --save-dev supertest @types/supertest (For Unit Test) /OR/ npm install supertest --save-dev
+        npm install --save-dev @types/express (OPTIONAL)
+        npm install --save-dev supertest @types/supertest (For Unit Test) /OR/ npm install supertest --save-dev (OPTIONAL)
     => For Database
         npm install --save-dev prisma (For Development)
     => For Logger
         npm install winston
     => For Hashing
         npm install bcrypt
-        npm install --save-dev @types/bcrypt (For Development) (Run A Both)
+        npm install --save-dev @types/bcrypt (For Development) (Run A Both) (OPTIONAL)
     => For UUID (For Login Auth)
         npm install uuid
-        npm install --save-dev @types/uuid (For Development) (Run A Both)
+        npm install --save-dev @types/uuid (For Development) (Run A Both) (OPTIONAL)
     => For UniTest
-        npm install --save-dev jest /OR/ npm install --save-dev jest@25.2.2 supertest
-        npm install --save-dev babel-jest @babel/preset-env
-        npm install supertest jest
-        npm install expect.js
+        npm install --save-dev jest /OR/ npm install --save-dev jest@25.2.2 supertest 
+        npm install --save-dev babel-jest @babel/preset-env (OPTIONAL)
+        npm install supertest jest (OPTIONAL)
+        npm install expect.js (OPTIONAL)
+    => For Upload
+        npm install multer
+
 
         
     
