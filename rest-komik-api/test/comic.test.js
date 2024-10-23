@@ -1,5 +1,5 @@
 import { describe, afterEach, it, beforeEach } from 'node:test'
-import { createManyTestComics, createManyTestGenres, createTestComic, createTestGenre, createTestUser, getTestGenre, removeTestComic, removeTestGenre, removeTestUser } from './test-utils.js'
+import { createManyTestComics, createManyTestGenres, createTestComic, createTestGenre, createTestUser, getTestComic, getTestGenre, removeTestComic, removeTestGenre, removeTestUser } from './test-utils.js'
 import supertest from 'supertest'
 import { expect } from 'expect';
 import fs from 'fs';
@@ -9,264 +9,264 @@ import { web } from '../src/app/web.js'
 // const __dirname = path.dirname(new URL(import.meta.url).pathname.replace(/%20/g, ' '));
 const __dirname = path.resolve(); // Path
 
-// describe('POST /api/comic', () => {
-//     beforeEach(async () => {
-//         await createTestUser();
-//         await createTestGenre();
-//     });
+describe('POST /api/comic', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestGenre();
+    });
 
-//     afterEach(async () => {
-//         await removeTestUser();
-//         await removeTestComic();
-//         await removeTestGenre();
-//     });
+    afterEach(async () => {
+        await removeTestUser();
+        await removeTestComic();
+        await removeTestGenre();
+    });
 
-//     it('should create new comic with image upload', async () => {
-//         // Simulation Image
-//         const imagesDir = path.join(__dirname, 'rest-komik-api/test/images'); // Path Image
-//         const imagePath = path.join(imagesDir, 'test.png');
-//         const imageBuffer = Buffer.from('test image data'); // Simulation Data
+    it('should create new comic with image upload', async () => {
+        // Simulation Image
+        const imagesDir = path.join(__dirname, 'rest-komik-api/test/images'); // Path Image
+        const imagePath = path.join(imagesDir, 'test.png');
+        const imageBuffer = Buffer.from('test image data'); // Simulation Data
         
-//         // Path Is Exist
-//         if (!fs.existsSync(imagesDir)) {
-//             fs.mkdirSync(imagesDir, { recursive: true }); // Create
-//         }
+        // Path Is Exist
+        if (!fs.existsSync(imagesDir)) {
+            fs.mkdirSync(imagesDir, { recursive: true }); // Create
+        }
         
-//         // Save Temporary
-//         fs.writeFileSync(imagePath, imageBuffer);
+        // Save Temporary
+        fs.writeFileSync(imagePath, imageBuffer);
 
-//         const result = await supertest(web)
-//             .post('/api/comic')
-//             .set('Authorization', 'test')
-//             .attach('image', imagePath)
-//             .field('name', 'test')
-//             .field('type', 'Manhwa')
-//             .field('genre_id', 1);
+        const result = await supertest(web)
+            .post('/api/comic')
+            .set('Authorization', 'test')
+            .attach('image', imagePath)
+            .field('name', 'test')
+            .field('type', 'Manhwa')
+            .field('genre_id', 1);
         
-//         expect(result.status).toBe(200);
-//         expect(result.body.data.name).toBe('test');
-//         expect(result.body.data.type).toBe('Manhwa');
+        expect(result.status).toBe(200);
+        expect(result.body.data.name).toBe('test');
+        expect(result.body.data.type).toBe('Manhwa');
         
-//         expect(result.body.data.genre.id).toBe(1);
-//         expect(result.body.data.genre.name).toBe('test genre');
+        expect(result.body.data.genre.id).toBe(1);
+        expect(result.body.data.genre.name).toBe('test genre');
 
-//         // Varification Images
-//         expect(result.body.data.image).toBeDefined();
-//         expect(result.body.data.image).not.toBeNull();
+        // Varification Images
+        expect(result.body.data.image).toBeDefined();
+        expect(result.body.data.image).not.toBeNull();
 
-//         // Image Is Buffer
-//         expect(result.body.data.image.type).toBe('Buffer');
+        // Image Is Buffer
+        expect(result.body.data.image.type).toBe('Buffer');
 
-//         // Delete Temporary Image
-//         try {
-//             fs.unlinkSync(imagePath);
-//         } catch (err) {
-//             console.error('Error deleting temporary image file:', err);
-//         }
-//     });
+        // Delete Temporary Image
+        try {
+            fs.unlinkSync(imagePath);
+        } catch (err) {
+            console.error('Error deleting temporary image file:', err);
+        }
+    });
 
-//     it('should create new comic withouth image', async () => {
-//         const result = await supertest(web)
-//             .post('/api/comic')
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test',
-//                 type: 'Manhwa',
-//                 genre_id: 1,
-//             });
+    it('should create new comic withouth image', async () => {
+        const result = await supertest(web)
+            .post('/api/comic')
+            .set('Authorization', 'test')
+            .send({
+                name: 'test',
+                type: 'Manhwa',
+                genre_id: 1,
+            });
             
-//         expect(result.status).toBe(200);
-//         expect(result.body.data.name).toBe('test');
-//         expect(result.body.data.type).toBe('Manhwa');
-//         expect(result.body.data.image).toBeNull();
+        expect(result.status).toBe(200);
+        expect(result.body.data.name).toBe('test');
+        expect(result.body.data.type).toBe('Manhwa');
+        expect(result.body.data.image).toBeNull();
         
-//         expect(result.body.data.genre.id).toBe(1);
-//         expect(result.body.data.genre.name).toBe('test genre');
-//     });
+        expect(result.body.data.genre.id).toBe(1);
+        expect(result.body.data.genre.name).toBe('test genre');
+    });
 
-//     it('reject if invalid', async () => {
-//         const result = await supertest(web)
-//             .post('/api/comic')
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: '',
-//                 type: '',
-//                 genre_id: null,
-//             });
+    it('reject if invalid', async () => {
+        const result = await supertest(web)
+            .post('/api/comic')
+            .set('Authorization', 'test')
+            .send({
+                name: '',
+                type: '',
+                genre_id: null,
+            });
 
-//         expect(result.status).toBe(400);
-//         expect(result.body.error).toBeDefined();
-//     });
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBeDefined();
+    });
 
-//     it('reject if invalid not match type', async () => {
-//         const result = await supertest(web)
-//             .post('/api/comic')
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test',
-//                 type: 'test',
-//                 genre_id: 1,
-//             });
+    it('reject if invalid not match type', async () => {
+        const result = await supertest(web)
+            .post('/api/comic')
+            .set('Authorization', 'test')
+            .send({
+                name: 'test',
+                type: 'test',
+                genre_id: 1,
+            });
 
-//         expect(result.status).toBe(400);
-//         expect(result.body.error).toBeDefined();
-//     });
+        expect(result.status).toBe(400);
+        expect(result.body.error).toBeDefined();
+    });
 
-//     it('reject if genre not found', async () => {
-//         const result = await supertest(web)
-//             .post('/api/comic')
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test 2',
-//                 type: 'Manga',
-//                 genre_id: 23,
-//             });
+    it('reject if genre not found', async () => {
+        const result = await supertest(web)
+            .post('/api/comic')
+            .set('Authorization', 'test')
+            .send({
+                name: 'test 2',
+                type: 'Manga',
+                genre_id: 23,
+            });
             
-//         expect(result.status).toBe(404);
-//         expect(result.body.error).toBeDefined();
-//     });
-// })
+        expect(result.status).toBe(404);
+        expect(result.body.error).toBeDefined();
+    });
+})
 
-// describe('PATCH /api/comic/:id', () => {
-//     beforeEach(async () => {
-//         await createTestUser();
-//         await createTestGenre();
-//         await createTestComic();
-//     })
+describe('PATCH /api/comic/:id', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestGenre();
+        await createTestComic();
+    })
 
-//     afterEach(async () => {
-//         await removeTestComic();
-//         await removeTestGenre();
-//         await removeTestUser();
-//     })
+    afterEach(async () => {
+        await removeTestComic();
+        await removeTestGenre();
+        await removeTestUser();
+    })
 
-//     it('should update comic with image upload', async () => {
-//         // Simulation Image
-//         const imagesDir = path.join(__dirname, 'rest-komik-api/test/images'); // Path Image
-//         const imagePath = path.join(imagesDir, 'test.png');
-//         const imageBuffer = Buffer.from('test image data'); // Simulation Data
+    it('should update comic with image upload', async () => {
+        // Simulation Image
+        const imagesDir = path.join(__dirname, 'rest-komik-api/test/images'); // Path Image
+        const imagePath = path.join(imagesDir, 'test.png');
+        const imageBuffer = Buffer.from('test image data'); // Simulation Data
         
-//         // Path Is Exist
-//         if (!fs.existsSync(imagesDir)) {
-//             fs.mkdirSync(imagesDir, { recursive: true }); // Create
-//         }
+        // Path Is Exist
+        if (!fs.existsSync(imagesDir)) {
+            fs.mkdirSync(imagesDir, { recursive: true }); // Create
+        }
         
-//         // Save Temporary
-//         fs.writeFileSync(imagePath, imageBuffer);
+        // Save Temporary
+        fs.writeFileSync(imagePath, imageBuffer);
 
-//         const result = await supertest(web)
-//             .patch('/api/comic/' + 1)
-//             .set('Authorization', 'test')
-//             .attach('image', imagePath)
-//             .field('name', 'test 2')
-//             .field('type', 'Manga')
-//             .field('genre_id', 1);
+        const result = await supertest(web)
+            .patch('/api/comic/' + 1)
+            .set('Authorization', 'test')
+            .attach('image', imagePath)
+            .field('name', 'test 2')
+            .field('type', 'Manga')
+            .field('genre_id', 1);
             
-//         expect(result.status).toBe(200);
-//         expect(result.body.data.name).toBe('test 2');
-//         expect(result.body.data.type).toBe('Manga');
+        expect(result.status).toBe(200);
+        expect(result.body.data.name).toBe('test 2');
+        expect(result.body.data.type).toBe('Manga');
         
-//         expect(result.body.data.genre.id).toBe(1);
-//         expect(result.body.data.genre.name).toBe('test genre');
+        expect(result.body.data.genre.id).toBe(1);
+        expect(result.body.data.genre.name).toBe('test genre');
 
-//         // Varification Images
-//         expect(result.body.data.image).toBeDefined();
-//         expect(result.body.data.image).not.toBeNull();
+        // Varification Images
+        expect(result.body.data.image).toBeDefined();
+        expect(result.body.data.image).not.toBeNull();
 
-//         // Image Is Buffer
-//         expect(result.body.data.image.type).toBe('Buffer');
+        // Image Is Buffer
+        expect(result.body.data.image.type).toBe('Buffer');
 
-//         // Delete Temporary Image
-//         try {
-//             fs.unlinkSync(imagePath);
-//         } catch (err) {
-//             console.error('Error deleting temporary image file:', err);
-//         }
-//     });
+        // Delete Temporary Image
+        try {
+            fs.unlinkSync(imagePath);
+        } catch (err) {
+            console.error('Error deleting temporary image file:', err);
+        }
+    });
 
-//     it('should update comic without image upload', async () => {
-//         const result = await supertest(web)
-//             .patch('/api/comic/' + 1)
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test 2',
-//                 type: 'Manga',
-//                 genre_id: 1,
-//             });
+    it('should update comic without image upload', async () => {
+        const result = await supertest(web)
+            .patch('/api/comic/' + 1)
+            .set('Authorization', 'test')
+            .send({
+                name: 'test 2',
+                type: 'Manga',
+                genre_id: 1,
+            });
             
-//         expect(result.status).toBe(200);
-//         expect(result.body.data.name).toBe('test 2');
-//         expect(result.body.data.type).toBe('Manga');
+        expect(result.status).toBe(200);
+        expect(result.body.data.name).toBe('test 2');
+        expect(result.body.data.type).toBe('Manga');
         
-//         expect(result.body.data.genre.id).toBe(1);
-//         expect(result.body.data.genre.name).toBe('test genre');
-//     });
+        expect(result.body.data.genre.id).toBe(1);
+        expect(result.body.data.genre.name).toBe('test genre');
+    });
     
-//     it('reject if comic not found', async () => {
-//         const result = await supertest(web)
-//             .patch('/api/comic/' + 2)
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test 2',
-//                 type: 'Manga',
-//                 genre_id: 1,
-//             });
+    it('reject if comic not found', async () => {
+        const result = await supertest(web)
+            .patch('/api/comic/' + 2)
+            .set('Authorization', 'test')
+            .send({
+                name: 'test 2',
+                type: 'Manga',
+                genre_id: 1,
+            });
             
-//         expect(result.status).toBe(404);
-//         expect(result.body.error).toBeDefined();
-//     });
+        expect(result.status).toBe(404);
+        expect(result.body.error).toBeDefined();
+    });
 
-//     it('reject if genre not found', async () => {
-//         const result = await supertest(web)
-//             .patch('/api/comic/' + 1)
-//             .set('Authorization', 'test')
-//             .send({
-//                 name: 'test 2',
-//                 type: 'Manga',
-//                 genre_id: 2,
-//             });
+    it('reject if genre not found', async () => {
+        const result = await supertest(web)
+            .patch('/api/comic/' + 1)
+            .set('Authorization', 'test')
+            .send({
+                name: 'test 2',
+                type: 'Manga',
+                genre_id: 2,
+            });
             
-//         expect(result.status).toBe(404);
-//         expect(result.body.error).toBeDefined();
-//     });
-// })
+        expect(result.status).toBe(404);
+        expect(result.body.error).toBeDefined();
+    });
+})
 
-// describe('GET /api/comic/:id', () => {
-//     beforeEach(async () => {
-//         await createTestUser();
-//         await createTestGenre();
-//         await createTestComic();
-//     })
+describe('GET /api/comic/:id', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestGenre();
+        await createTestComic();
+    })
 
-//     afterEach(async () => {
-//         await removeTestComic();
-//         await removeTestGenre();
-//         await removeTestUser();
-//     })
+    afterEach(async () => {
+        await removeTestComic();
+        await removeTestGenre();
+        await removeTestUser();
+    })
 
-//     it('should get comic', async () => {
-//         const result = await supertest(web)
-//             .get('/api/comic/' + 1)
-//             .set('Authorization', 'test')
+    it('should get comic', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/' + 1)
+            .set('Authorization', 'test')
             
-//         expect(result.status).toBe(200)
-//         expect(result.body.data.id).toBe(1)
-//         expect(result.body.data.name).toBe('test')
-//         expect(result.body.data.image).toBeNull()
-//         expect(result.body.data.type).toBe('Manhwa')
-//         expect(result.body.data.genre.id).toBe(1)
-//         expect(result.body.data.genre.name).toBe('test genre')
-//     })
+        expect(result.status).toBe(200)
+        expect(result.body.data.id).toBe(1)
+        expect(result.body.data.name).toBe('test')
+        expect(result.body.data.image).toBeNull()
+        expect(result.body.data.type).toBe('Manhwa')
+        expect(result.body.data.genre.id).toBe(1)
+        expect(result.body.data.genre.name).toBe('test genre')
+    })
 
-//     it('reject if comic is not found', async () => {
-//         const result = await supertest(web)
-//             .get('/api/comic/' + 2)
-//             .set('Authorization', 'test')
+    it('reject if comic is not found', async () => {
+        const result = await supertest(web)
+            .get('/api/comic/' + 2)
+            .set('Authorization', 'test')
             
-//         expect(result.status).toBe(404);
-//         expect(result.body.error).toBeDefined()
-//     })
-// })
+        expect(result.status).toBe(404);
+        expect(result.body.error).toBeDefined()
+    })
+})
 
 describe('GET /api/comic', () => {
     beforeEach(async () => {
@@ -354,36 +354,38 @@ describe('GET /api/comic', () => {
     })
 })
 
-// describe('DELETE /api/comic/:id', () => {
-//     beforeEach(async () => {
-//         await createTestUser();
-//         await createTestGenre();
-//     })
+describe('DELETE /api/comic/:id', () => {
+    beforeEach(async () => {
+        await createTestUser();
+        await createTestGenre();
+        await createTestComic();
+    })
 
-//     afterEach(async () => {
-//         await removeTestGenre();
-//         await removeTestUser();
-//     })
+    afterEach(async () => {
+        await removeTestComic();
+        await removeTestGenre();
+        await removeTestUser();
+    })
 
-//     it('should can delete', async () => {
-//         let testGenre = await getTestGenre();
-//         const result = await supertest(web)
-//             .delete('/api/comic/' + 1)
-//             .set('Authorization', 'test')
+    it('should can delete', async () => {
+        let testComic = await getTestComic();
+        const result = await supertest(web)
+            .delete('/api/comic/' + 1)
+            .set('Authorization', 'test')
             
-//         expect(result.status).toBe(200)
-//         expect(result.body.data).toBe("OK")
+        expect(result.status).toBe(200)
+        expect(result.body.data).toBe("OK")
 
-//         testGenre = await getTestGenre();
-//         expect(testGenre).toBeNull();
-//     })
+        testComic = await getTestComic();
+        expect(testComic).toBeNull();
+    })
 
-//     it('reject id genre not found', async () => {
-//         const result = await supertest(web)
-//             .delete('/api/comic/' + 2)
-//             .set('Authorization', 'test')
+    it('reject id genre not found', async () => {
+        const result = await supertest(web)
+            .delete('/api/comic/' + 2)
+            .set('Authorization', 'test')
             
-//         expect(result.status).toBe(404)
-//         expect(result.body.error).toBeDefined()
-//     })
-// })
+        expect(result.status).toBe(404)
+        expect(result.body.error).toBeDefined()
+    })
+})

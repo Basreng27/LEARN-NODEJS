@@ -220,34 +220,33 @@ const searchAndAll = async (request) => {
     }
 }
 
-// const remove = async (id) => {
-//     const comicValidateId = validate(getComicValidation, id)
+const remove = async (id) => {
+    const comicValidateId = validate(getComicValidation, id)
 
-//     const comic = await prismaClient.comic.findFirst({
-//         where:{
-//             id: comicValidateId
-//         },
-//         select: {
-//             id: true,
-//             name: true,
-//         }
-//     })
+    const comic = await prismaClient.comic.findFirst({
+        where:{
+            id: comicValidateId
+        },
+        select: {
+            id: true,
+        }
+    })
 
-//     if (!genre) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!comic) {
+        throw new ResponseError(404, "Comic is not found")
+    }
 
-//     return await prismaClient.comic.delete({
-//         where: {
-//             id: comicValidateId
-//         }
-//     })
-// }
+    return await prismaClient.comic.delete({
+        where: {
+            id: comicValidateId
+        }
+    })
+}
 
 export default {
     create,
     update,
     get,
     searchAndAll,
-    // remove
+    remove
 }
