@@ -1,5 +1,5 @@
 import { describe, afterEach, it, beforeEach } from 'node:test'
-import { createManyTestComics, createManyTestGenres, createTestComic, createTestGenre, createTestUser, getTestComic, getTestGenre, removeTestComic, removeTestGenre, removeTestUser } from './test-utils.js'
+import { createManyTestComics, createTestComic, createTestGenre, createTestUser, getTestComic, removeTestComic, removeTestGenre, removeTestUser } from './test-utils.js'
 import supertest from 'supertest'
 import { expect } from 'expect';
 import fs from 'fs';

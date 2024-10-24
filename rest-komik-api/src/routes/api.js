@@ -3,6 +3,7 @@ import { authMiddleware } from '../middleware/auth-middleware.js';
 import userController from '../controller/user-controller.js';
 import genreController from '../controller/genre-controller.js';
 import comicController from '../controller/comic-controller.js';
+import bookmarkController from '../controller/bookmark-controller.js';
 
 const userRouter = new express.Router();
 
@@ -23,6 +24,12 @@ userRouter.patch('/api/comic/:id', comicController.update)
 userRouter.get('/api/comic/:id', comicController.get)
 userRouter.get('/api/comic', comicController.searchAndAll)
 userRouter.delete('/api/comic/:id', comicController.remove)
+
+userRouter.post('/api/comic/bookmark', bookmarkController.create)
+// userRouter.put('/api/comic/bookmark/:id', bookmarkController.update)
+// userRouter.get('/api/comic/bookmark/:id', bookmarkController.get)
+// userRouter.get('/api/comic/bookmark', bookmarkController.searchAndAll)
+// userRouter.delete('/api/comic/bookmark/:id', bookmarkController.remove)
 
 export {
     userRouter

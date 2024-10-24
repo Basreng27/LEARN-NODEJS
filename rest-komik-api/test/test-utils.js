@@ -97,3 +97,41 @@ export const getTestComic = async () => {
         }
     })
 }
+
+export const removeTestBookmark = async () => {
+    await prismaClient.bookmark.deleteMany()
+}
+
+export const createTestBookmark = async () => {
+    await prismaClient.bookmark.create({
+        data: {
+            id: 1,
+            user_id: 1,
+            comic_id: 1,
+            last_chapter: 10,
+            updated_at: new Date('2024-10-25')
+        }
+    })
+}
+
+export const createManyTestBookmarks = async () => {
+    for (let i = 0; i < 15; i++) {
+        await prismaClient.bookmark.create({
+            data: {
+                id: 1,
+                user_id: 1,
+                comic_id: 1,
+                last_chapter: 10 + i,
+                updated_at: new Date('2024-10-25')
+            }
+        })
+    }
+}
+
+export const getTestBookmark = async () => {
+    return prismaClient.bookmark.findUnique({
+        where: {
+            id: 1
+        }
+    })
+}
