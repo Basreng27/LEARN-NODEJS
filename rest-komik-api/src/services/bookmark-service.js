@@ -337,33 +337,33 @@ const searchAndAll = async (request) => {
     }
 }
 
-// const remove = async (id) => {
-//     const bookmarkValidateId = validate(getBookmarkValidation, id)
+const remove = async (id) => {
+    const bookmarkValidateId = validate(getBookmarkValidation, id)
 
-//     const bookmark = await prismaClient.comic.findFirst({
-//         where:{
-//             id: bookmarkValidateId
-//         },
-//         select: {
-//             id: true,
-//         }
-//     })
+    const bookmark = await prismaClient.bookmark.findFirst({
+        where:{
+            id: bookmarkValidateId
+        },
+        select: {
+            id: true,
+        }
+    })
 
-//     if (!comic) {
-//         throw new ResponseError(404, "Comic is not found")
-//     }
+    if (!bookmark) {
+        throw new ResponseError(404, "Comic is not found")
+    }
 
-//     return await prismaClient.comic.delete({
-//         where: {
-//             id: bookmarkValidateId
-//         }
-//     })
-// }
+    return await prismaClient.bookmark.delete({
+        where: {
+            id: bookmarkValidateId
+        }
+    })
+}
 
 export default {
     create,
     update,
     get,
     searchAndAll,
-    // remove
+    remove
 }

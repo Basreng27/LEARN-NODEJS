@@ -380,7 +380,7 @@ describe('DELETE /api/comic/:id', () => {
         expect(testComic).toBeNull();
     })
 
-    it('reject id genre not found', async () => {
+    it('reject if genre not found', async () => {
         const result = await supertest(web)
             .delete('/api/comic/' + 2)
             .set('Authorization', 'test')

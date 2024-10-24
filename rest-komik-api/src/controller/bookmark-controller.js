@@ -67,25 +67,25 @@ const searchAndAll = async (req, res, next) => {
     }
 }
 
-// const remove = async (req, res, next) => {
-//     try {
-//         const id = req.params.id
+const remove = async (req, res, next) => {
+    try {
+        const id = req.params.id
         
-//         await bookmarkService.remove(id)
+        await bookmarkService.remove(id)
 
-//         res.status(200).json({
-//             status: true,
-//             data: "OK"
-//         })
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+        res.status(200).json({
+            status: true,
+            data: "OK"
+        })
+    } catch (e) {
+        next(e)
+    }
+}
 
 export default {
     create,
     update,
     get,
     searchAndAll,
-    // remove
+    remove
 }
