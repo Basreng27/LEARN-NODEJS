@@ -150,43 +150,65 @@ const update = async (id, request) => {
     };
 }
 
-// const get = async (id) => {
-//     const bookmarkValidateId = validate(getBookmarkValidation, id)
+const get = async (id) => {
+    const bookmarkValidateId = validate(getBookmarkValidation, id)
 
-//     const bookmark = await prismaClient.comic.findFirst({
-//         where:{
-//             id: bookmarkValidateId
-//         },
-//         select: {
-//             id: true,
-//             name: true,
-//             image: true,
-//             type: true,
-//             genre_id: true,
-//         }
-//     })
+    const bookmark = await prismaClient.bookmark.findFirst({
+        where:{
+            id: bookmarkValidateId
+        },
+        select: {
+            id: true,
+            user_id: true,
+            comic_id: true,
+            last_chapter: true,
+            updated_at: true,
+        }
+    })
 
-//     if (!comic) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!bookmark) {
+        throw new ResponseError(404, "Bookmark is not found")
+    }
 
-//     const genre = await getGenreById(comic.genre_id);
+    const [user, comic] = await Promise.all([
+        getUserById(bookmark.user_id),
+        getComicById(bookmark.comic_id)
+    ])
 
-//     if (!genre) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!user) {
+        throw new ResponseError(404, "User is not found")
+    }
 
-//     return {
-//         id: comic.id,
-//         name: comic.name,
-//         image: comic.image,
-//         type: comic.type,
-//         genre: {
-//             id: genre.id,
-//             name: genre.name
-//         }
-//     };
-// }
+    if (!comic) {
+        throw new ResponseError(404, "Comic is not found")
+    }
+
+    const genre = await getGenreById(comic.genre_id);
+
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+    return {
+        id: bookmark.id,
+        last_chapter: bookmark.last_chapter,
+        updated_at: bookmark.updated_at,
+        user_id: {
+            id: user.id,
+            username: user.username
+        },
+        comic_id: {
+            id: comic.id,
+            name: comic.name,
+            image: comic.image,
+            type: comic.type,
+            genre: {
+                id: genre.id,
+                name: genre.name
+            }
+        }
+    };
+}
 
 // const searchAndAll = async (request) => {
 //     request = validate(searchBookmarkValidation, request)
@@ -289,7 +311,7 @@ const update = async (id, request) => {
 export default {
     create,
     update,
-    // get,
+    get,
     // searchAndAll,
     // remove
 }

@@ -124,7 +124,7 @@ const get = async (id) => {
     })
 
     if (!comic) {
-        throw new ResponseError(404, "Genre is not found")
+        throw new ResponseError(404, "Comic is not found")
     }
 
     const genre = await getGenreById(comic.genre_id);

@@ -28,20 +28,20 @@ const update = async (req, res, next) => {
     }
 }
 
-// const get = async (req, res, next) => {
-//     try {
-//         const id = req.params.id
+const get = async (req, res, next) => {
+    try {
+        const id = req.params.id
         
-//         const result = await bookmarkService.get(id)
+        const result = await bookmarkService.get(id)
 
-//         res.status(200).json({
-//             status: true,
-//             data: result
-//         })
-//     } catch (e) {
-//         next(e)
-//     }
-// }
+        res.status(200).json({
+            status: true,
+            data: result
+        })
+    } catch (e) {
+        next(e)
+    }
+}
 
 // const searchAndAll = async (req, res, next) => {
 //     try {
@@ -83,7 +83,7 @@ const update = async (req, res, next) => {
 export default {
     create,
     update,
-    // get,
+    get,
     // searchAndAll,
     // remove
 }
