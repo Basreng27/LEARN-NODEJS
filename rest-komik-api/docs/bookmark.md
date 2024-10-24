@@ -122,10 +122,37 @@
 ```
 
 #
-## Get All
-- Endpoint : GET /api/comic/bookmarks
-- Headers : 
+## Search
+- Endpoint : POST /api/comic/bookmarks
+- Headers :
     - Authorization : token
+- Query Params :
+    - name (comic) : 
+        - Search By name (comic)
+        - Using Like
+        - Optional
+    - type (comic) : 
+        - Search By type (comic)
+        - Using Where
+        - Optional
+    - name (genre) : 
+        - Search By name (genre)
+        - Using Like
+        - Optional
+    - last_chapter : 
+        - Search By last_chapter
+        - Using Where for Less Than or Greater Than
+        - Optional
+    - updated_at : 
+        - Search By updated_at
+        - Using Beetwen
+        - Optional
+    - page : 
+        - Number Of Page
+        - Default 1
+    - size/limit : 
+        - Size Perpage
+        - Default 10
 - Response Body Success :
 ```json
 {
@@ -163,14 +190,19 @@
                 }
             }
         }
-    ]
+    ],
+    "paging": {
+        "page": 1,
+        "total_page": 3,
+        "total_item": 30
+    }
 }
 ```
 - Response Body Error :
 ```json
 {
     "status": false,
-    "error": "Comic Is Not Found"
+    "error": "Comic is not found"
 }
 ```
 

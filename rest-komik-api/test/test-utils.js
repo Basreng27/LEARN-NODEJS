@@ -118,7 +118,7 @@ export const createManyTestBookmarks = async () => {
     for (let i = 0; i < 15; i++) {
         await prismaClient.bookmark.create({
             data: {
-                id: 1,
+                id: i,
                 user_id: 1,
                 comic_id: 1,
                 last_chapter: 10 + i,

@@ -1,5 +1,5 @@
 import { validate } from "../validations/validation.js"
-import { createBookmarkValidation, getBookmarkValidation } from "../validations/bookmark-validation.js"
+import { createBookmarkValidation, getBookmarkValidation, searchBookmarkValidation } from "../validations/bookmark-validation.js"
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 
@@ -210,80 +210,132 @@ const get = async (id) => {
     };
 }
 
-// const searchAndAll = async (request) => {
-//     request = validate(searchBookmarkValidation, request)
+const searchAndAll = async (request) => {
+    request = validate(searchBookmarkValidation, request)
 
-//     const skip = (request.page - 1) * request.size
+    const skip = (request.page - 1) * request.size
 
-//     const filters = []
+    const filters = []
 
-//     if (request.name) {
-//         filters.push({
-//             name: {
-//                 contains: request.name,
-//                 mode: 'insensitive' // Optional: if you want case-insensitive search
-//             }
-//         })
-//     }
+    if (request.comic_name) {
+        filters.push({
+            comic: {
+                name: {
+                    contains: request.comic_name,
+                    mode: 'insensitive' // Optional: if you want case-insensitive search
+                }
+            }
+        })
+    }
 
-//     if (request.type) {
-//         filters.push({
-//             type: request.type,
-//         })
-//     }
+    if (request.type) {
+        filters.push({
+            comic: {
+                type: request.type,
+            }
+        })
+    }
 
-//     if (request.genre_name) {
-//         filters.push({
-//             genre: {
-//                 name: {
-//                     contains: request.genre_name,
-//                     mode: 'insensitive'
-//                 }
-//             }
-//         })
-//     }
+    if (request.genre_name) {
+        filters.push({
+            comic: {
+                genre: {
+                    name: {
+                        contains: request.genre_name,
+                        mode: 'insensitive'
+                    }
+                }
+            }
+        })
+    }
 
-//     const comics = await prismaClient.comic.findMany({
-//         where: {
-//             AND: filters
-//         },
-//         take: request.size,
-//         skip: skip,
-//     })
+    if (request.last_chapter) {
+        filters.push({
+            last_chapter: request.last_chapter
+        })
+    }
+
+    if (request.updated_at) {
+        filters.push({
+            updated_at: new Date(request.updated_at),
+            // gte: new Date(request.updated_at) // 'gte' means greater than or equal to
+            // lte: new Date(request.updated_at) // 'lte' means less than or equal to
+            // updated_at: {
+            //     gte: new Date(request.start_date), // Greater than or equal to start date
+            //     lte: new Date(request.end_date)    // Less than or equal to end date
+            // }
+        })
+    }
+
+    const bookmarks = await prismaClient.bookmark.findMany({
+        where: {
+            AND: filters
+        },
+        take: request.size,
+        skip: skip,
+    })
     
-//     // Get All Genre
-//     const genres = await Promise.all(
-//         comics.map(comic => getGenreById(comic.genre_id))
-//     );
+    // Get All User
+    const users = await Promise.all(
+        bookmarks.map(bookmark => getUserById(bookmark.user_id))
+    );
 
-//     // Mix Comic And Genre
-//     const comicsWithGenres = comics.map((comic, index) => ({
-//         id: comic.id,
-//         name: comic.name,
-//         image: comic.image,
-//         type: comic.type,
-//         genre: {
-//             id: genres[index]?.id,
-//             name: genres[index]?.name,
-//         },
-//     }));
+    // Get All Comic And Genre
+    const comics = await Promise.all(
+        bookmarks.map(async (bookmark) => {
+            const comic = await getComicById(bookmark.comic_id);
+            const genre = await getGenreById(comic.genre_id);
+    
+            return {
+                id: comic.id,
+                name: comic.name,
+                image: comic.image,
+                type: comic.type,
+                genre: {
+                    id: genre.id,
+                    name: genre.name
+                }
+            };
+        })
+    );
 
-//     const totalItem = await prismaClient.comic.count({
-//         where: {
-//             AND: filters
-//         }
-//     })
+    // Mix Bookmark, User And Comic
+    const bookmarkUserComic = bookmarks.map((bookmark, index) => ({
+        id: bookmark.id,
+        last_chapter: bookmark.last_chapter,
+        updated_at: bookmark.updated_at,
+        user_id: {
+            id: users[index]?.id,
+            username: users[index]?.username
+        },
+        comic_id: {
+            id: comics[index]?.id,
+            name: comics[index]?.name,
+            image: comics[index]?.image,
+            type: comics[index]?.type,
+            genre: {
+                id: comics[index]?.genre.id,
+                name: comics[index]?.genre.name
+            }
+        }
+    }));
 
-//     return {
-//         status: true,
-//         data: comicsWithGenres,
-//         paging: {
-//             page: request.page,
-//             total_item: totalItem,
-//             total_page: Math.ceil(totalItem / request.size),
-//         }
-//     }
-// }
+    const totalItem = await prismaClient.bookmark.count({
+        where: {
+            AND: filters
+        }
+    })
+
+    return {
+        status: true,
+        data: bookmarkUserComic,
+        paging: {
+            page: request.page,
+            total_item: totalItem,
+            total_page: Math.ceil(totalItem / request.size),
+        }
+    }
+}
 
 // const remove = async (id) => {
 //     const bookmarkValidateId = validate(getBookmarkValidation, id)
@@ -312,6 +364,6 @@ export default {
     create,
     update,
     get,
-    // searchAndAll,
+    searchAndAll,
     // remove
 }

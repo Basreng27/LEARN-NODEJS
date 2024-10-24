@@ -56,7 +56,7 @@ model Bookmark {
   id           Int      @id @default(autoincrement())
   user_id      Int
   comic_id     Int
-  last_chapter Int?
+  last_chapter Int
   updated_at   DateTime
 
   user  User  @relation(fields: [user_id], references: [id])
