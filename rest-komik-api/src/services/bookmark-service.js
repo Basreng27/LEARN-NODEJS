@@ -1,5 +1,5 @@
 import { validate } from "../validations/validation.js"
-import { createBookmarkValidation } from "../validations/bookmark-validation.js"
+import { createBookmarkValidation, getBookmarkValidation } from "../validations/bookmark-validation.js"
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../errors/response-error.js"
 
@@ -75,69 +75,87 @@ const create = async (request) => {
     };
 }
 
-// const update = async (id, request, file) => {
-//     const comicValidate = validate(updateBookmarkValidation, request)
-//     const comicValidateId = validate(getBookmarkValidation, id)
+const update = async (id, request) => {
+    const bookmarkValidate = validate(createBookmarkValidation, request)
+    const bookmarkValidateId = validate(getBookmarkValidation, id)
 
-//     const bookmark = await prismaClient.comic.findFirst({
-//         where:{
-//             id: comicValidateId
-//         },
-//         select: {
-//             id: true,
-//             name: true,
-//             image: true,
-//             type: true,
-//             genre_id: true,
-//         }
-//     })
+    const bookmark = await prismaClient.bookmark.findFirst({
+        where:{
+            id: bookmarkValidateId
+        },
+        select: {
+            id: true,
+            user_id: true,
+            comic_id: true,
+            last_chapter: true,
+            updated_at: true,
+        }
+    })
 
-//     if (!comic) {
-//         throw new ResponseError(404, "Comic is not found")
-//     }
+    if (!bookmark) {
+        throw new ResponseError(404, "Bookmark is not found")
+    }
 
-//     if (file && file.buffer) {
-//         comicValidate.image = file.buffer; // Save Buffer
-//     } 
+    const [user, comic] = await Promise.all([
+        getUserById(bookmarkValidate.user_id),
+        getComicById(bookmarkValidate.comic_id)
+    ])
 
-//     const genre = await getGenreById(comicValidate.genre_id);
+    if (!user) {
+        throw new ResponseError(404, "User is not found")
+    }
 
-//     if (!genre) {
-//         throw new ResponseError(404, "Genre is not found")
-//     }
+    if (!comic) {
+        throw new ResponseError(404, "Comic is not found")
+    }
 
-//     const updateComic = await prismaClient.comic.update({
-//         where: {
-//             id: comicValidateId
-//         },
-//         data: comicValidate,
-//         select: {
-//             id: true,
-//             name: true,
-//             image: true,
-//             type: true,
-//             genre_id: true,
-//         }
-//     })
+    const genre = await getGenreById(comic.genre_id);
 
-//     return {
-//         id: updateComic.id,
-//         name: updateComic.name,
-//         image: updateComic.image,
-//         type: updateComic.type,
-//         genre: {
-//             id: genre.id,
-//             name: genre.name
-//         }
-//     };
-// }
+    if (!genre) {
+        throw new ResponseError(404, "Genre is not found")
+    }
+
+    const updateBookmark = await prismaClient.bookmark.update({
+        where: {
+            id: bookmarkValidateId
+        },
+        data: bookmarkValidate,
+        select: {
+            id: true,
+            user_id: true,
+            comic_id: true,
+            last_chapter: true,
+            updated_at: true,
+        }
+    })
+
+    return {
+        id: updateBookmark.id,
+        last_chapter: updateBookmark.last_chapter,
+        updated_at: updateBookmark.updated_at,
+        user_id: {
+            id: user.id,
+            username: user.username
+        },
+        comic_id: {
+            id: comic.id,
+            name: comic.name,
+            image: comic.image,
+            type: comic.type,
+            genre: {
+                id: genre.id,
+                name: genre.name
+            }
+        }
+    };
+}
 
 // const get = async (id) => {
-//     const comicValidateId = validate(getBookmarkValidation, id)
+//     const bookmarkValidateId = validate(getBookmarkValidation, id)
 
 //     const bookmark = await prismaClient.comic.findFirst({
 //         where:{
-//             id: comicValidateId
+//             id: bookmarkValidateId
 //         },
 //         select: {
 //             id: true,
@@ -246,11 +264,11 @@ const create = async (request) => {
 // }
 
 // const remove = async (id) => {
-//     const comicValidateId = validate(getBookmarkValidation, id)
+//     const bookmarkValidateId = validate(getBookmarkValidation, id)
 
 //     const bookmark = await prismaClient.comic.findFirst({
 //         where:{
-//             id: comicValidateId
+//             id: bookmarkValidateId
 //         },
 //         select: {
 //             id: true,
@@ -263,14 +281,14 @@ const create = async (request) => {
 
 //     return await prismaClient.comic.delete({
 //         where: {
-//             id: comicValidateId
+//             id: bookmarkValidateId
 //         }
 //     })
 // }
 
 export default {
     create,
-    // update,
+    update,
     // get,
     // searchAndAll,
     // remove

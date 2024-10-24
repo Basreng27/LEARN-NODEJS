@@ -7,14 +7,7 @@ const createBookmarkValidation = Joi.object({
     updated_at: Joi.date().required(),
 })
 
-// const updateBookmarkValidation = Joi.object({
-//     name: Joi.string().max(255).optional(),
-//     image: Joi.binary().optional(),
-//     type: Joi.string().valid('Manhua', 'Manga', 'Manhwa').optional(),
-//     genre_id: Joi.number().min(1).positive().optional(),
-// })
-
-// const getBookmarkValidation = Joi.number().min(1).positive().required()
+const getBookmarkValidation = Joi.number().min(1).positive().required()
 
 // const searchBookmarkValidation = Joi.object({
 //     page: Joi.number().min(1).positive().default(1),
@@ -26,7 +19,6 @@ const createBookmarkValidation = Joi.object({
 
 export {
     createBookmarkValidation,
-    // getBookmarkValidation,
+    getBookmarkValidation,
     // searchBookmarkValidation,
-    // updateBookmarkValidation
 }

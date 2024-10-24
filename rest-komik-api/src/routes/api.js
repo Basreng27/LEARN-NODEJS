@@ -26,7 +26,7 @@ userRouter.get('/api/comic', comicController.searchAndAll)
 userRouter.delete('/api/comic/:id', comicController.remove)
 
 userRouter.post('/api/comic/bookmark', bookmarkController.create)
-// userRouter.put('/api/comic/bookmark/:id', bookmarkController.update)
+userRouter.put('/api/comic/bookmark/:id', bookmarkController.update)
 // userRouter.get('/api/comic/bookmark/:id', bookmarkController.get)
 // userRouter.get('/api/comic/bookmark', bookmarkController.searchAndAll)
 // userRouter.delete('/api/comic/bookmark/:id', bookmarkController.remove)

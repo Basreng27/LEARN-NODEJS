@@ -1,4 +1,3 @@
-import { ResponseError } from '../errors/response-error.js'
 import bookmarkService from '../services/bookmark-service.js'
 
 const create = async (req, res, next) => {
@@ -14,32 +13,26 @@ const create = async (req, res, next) => {
     }
 }
 
-// const update = async (req, res, next) => {
-//     upload(req, res, async (err) => {
-//         if (req.file && err) {
-//             throw new ResponseError(400, "Failed Upload")
-//         }
+const update = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        
+        const result = await bookmarkService.update(id, req.body)
 
-//         try {
-//             const id = req.params.id
-            
-//             const result = await comicService.update(id, req.body, req.file)
-    
-//             res.status(200).json({
-//                 status: true,
-//                 data: result
-//             })
-//         } catch (e) {
-//             next(e)
-//         }
-//     })
-// }
+        res.status(200).json({
+            status: true,
+            data: result
+        })
+    } catch (e) {
+        next(e)
+    }
+}
 
 // const get = async (req, res, next) => {
 //     try {
 //         const id = req.params.id
         
-//         const result = await comicService.get(id)
+//         const result = await bookmarkService.get(id)
 
 //         res.status(200).json({
 //             status: true,
@@ -60,7 +53,7 @@ const create = async (req, res, next) => {
 //             size: req.query.size,
 //         }
         
-//         const result = await comicService.searchAndAll(request)
+//         const result = await bookmarkService.searchAndAll(request)
 
 //         res.status(200).json({
 //             status: true,
@@ -76,7 +69,7 @@ const create = async (req, res, next) => {
 //     try {
 //         const id = req.params.id
         
-//         await comicService.remove(id)
+//         await bookmarkService.remove(id)
 
 //         res.status(200).json({
 //             status: true,
@@ -89,7 +82,7 @@ const create = async (req, res, next) => {
 
 export default {
     create,
-    // update,
+    update,
     // get,
     // searchAndAll,
     // remove
