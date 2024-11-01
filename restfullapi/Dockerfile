@@ -2,7 +2,7 @@
 FROM node:16-alpine
 
 # Set Work Directory di dalam container
-WORKDIR /app
+WORKDIR /app/Node-JS
 
 # Copy package.json dan package-lock.json ke dalam container
 COPY package*.json ./
